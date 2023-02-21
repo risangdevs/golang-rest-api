@@ -3,8 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"golang-rest-api/controllers"
 	"golang-rest-api/db"
 	"os"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -34,11 +37,16 @@ func main() {
 	db.DbMigrate(DB)
 	defer DB.Close()
 
-	// router := gin.Default()
-	// router.GET("/persons", controllers.GetAllPerson)
-	// router.POST("/persons", controllers.InsertPerson)
-	// router.PUT("/persons/:id", controllers.UpdatePerson)
-	// router.DELETE("/persons/:id", controllers.DeletePerson)
+	router := gin.Default()
+	router.GET("/transaction", controllers.GetAllTransaction)
+	router.POST("/transaction", controllers.InsertTransaction)
+	router.PUT("/transaction/:id", controllers.UpdateTransaction)
+	router.DELETE("/transaction/:id", controllers.DeleteTransaction)
+	router.GET("/account", controllers.GetAllAccount)
+	router.POST("/account", controllers.InsertAccount)
+	router.PUT("/account/:id", controllers.UpdateAccount)
+	router.DELETE("/account/:id", controllers.DeleteAccount)
 
-	// router.Run(":" + os.Getenv("PORT"))
+	// router.Run(":" + ("8019"))
+	router.Run(":" + os.Getenv("PORT"))
 }
