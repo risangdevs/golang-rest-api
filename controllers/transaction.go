@@ -32,6 +32,10 @@ func InsertTransaction(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+	err2 := repositories.InsertTransaction(db.DbConnection, transaction)
+	if err2 != nil {
+		panic(err2)
+	}
 
 	c.JSON(http.StatusOK, gin.H{"result": "Success Insert Transaction"})
 }

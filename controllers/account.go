@@ -32,7 +32,11 @@ func InsertAccount(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-
+	err2 := repositories.InsertAccount(db.DbConnection, account)
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, err2)
+		panic(err2)
+	}
 	c.JSON(http.StatusOK, gin.H{"result": "Success Insert Account"})
 }
 

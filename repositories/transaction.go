@@ -5,8 +5,20 @@ import (
 	"golang-rest-api/structs"
 )
 
-func GetAllTransaction(db *sql.DB) (results []structs.Transaction, err error) {
-	sql := `SELECT * FROM transaction`
+func GetAllTransaction(db *sql.DB) (results []structs.Record, err error) {
+	// sql := `SELECT * FROM transaction`
+	sql := `select
+	t.id as id, 
+  t.sender  as sender_id,
+  a."name" as sender_name,
+  t.beneficiary as beneficiary_id,
+  a2."name" as beneficiary_name,
+  t.amount as amount,
+  t.remark as remark
+FROM
+  "transaction" t 
+  INNER JOIN account a  ON t.sender  = a.id
+  INNER JOIN account a2 ON t.beneficiary = a2.id;`
 
 	rows, err := db.Query(sql)
 	if err != nil {
@@ -15,10 +27,10 @@ func GetAllTransaction(db *sql.DB) (results []structs.Transaction, err error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var transaction = structs.Transaction{}
+		var record = structs.Record{}
 
-		err = rows.Scan(&transaction.ID, &transaction.Sender, &transaction.Beneficiary, &transaction.Amount, &transaction.Remark)
-		results = append(results, transaction)
+		err = rows.Scan(&record.ID, &record.SenderID, &record.SenderName, &record.BeneficiaryID, &record.BeneficiaryName, &record.Remark, &record.Amount)
+		results = append(results, record)
 	}
 	if err != nil {
 		panic(err)
@@ -27,8 +39,8 @@ func GetAllTransaction(db *sql.DB) (results []structs.Transaction, err error) {
 }
 
 func InsertTransaction(db *sql.DB, transaction structs.Transaction) (err error) {
-	sql := `INSERT INTO transaction (id, first_name, last_name) VALUES ($1, $2, $3,$4,$5)`
-	errs := db.QueryRow(sql, transaction.ID, &transaction.Sender, &transaction.Beneficiary, &transaction.Amount, &transaction.Remark)
+	sql := `INSERT INTO transaction (sender, beneficiary, amount, remark) VALUES ($1, $2, $3, $4)`
+	errs := db.QueryRow(sql, &transaction.Sender, &transaction.Beneficiary, &transaction.Amount, &transaction.Remark)
 	return errs.Err()
 }
 func UpdateTransaction(db *sql.DB, transaction structs.Transaction) (err error) {

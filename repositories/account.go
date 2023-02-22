@@ -27,12 +27,12 @@ func GetAllAccount(db *sql.DB) (results []structs.Account, err error) {
 }
 
 func InsertAccount(db *sql.DB, account structs.Account) (err error) {
-	sql := `INSERT INTO account (id, first_name, last_name) VALUES ($1, $2, $3)`
-	errs := db.QueryRow(sql, account.ID, account.Name, account.Balance)
+	sql := `INSERT INTO account (name, balance) VALUES ($1, $2)`
+	errs := db.QueryRow(sql, account.Name, account.Balance)
 	return errs.Err()
 }
 func UpdateAccount(db *sql.DB, account structs.Account) (err error) {
-	sql := `UPDATE account SET first_name = $1, last_name = $2 WHERE id = $3`
+	sql := `UPDATE account SET name = $1, bakance = $2 WHERE id = $3`
 	errs := db.QueryRow(sql, account.Name, account.Balance, account.ID)
 	return errs.Err()
 }
